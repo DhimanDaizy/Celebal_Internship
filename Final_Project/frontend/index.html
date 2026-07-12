@@ -1,40 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>GPT Chatbot</title>
+    <title>MiniGPT AI</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 
 <body>
 
+<div class="background"></div>
+
 <div class="container">
 
-    <h1>🤖 GPT Chatbot</h1>
+    <!-- Sidebar -->
 
-    <div id="chat-box"></div>
+    <aside class="sidebar">
 
-    <div class="input-area">
+        <div class="logo">
 
-        <input
-            type="text"
-            id="message"
-            placeholder="Type your message..."
-        >
+            <div class="logo-circle">
+                🤖
+            </div>
 
-        <button onclick="sendMessage()">
-            Send
+            <h2>MiniGPT</h2>
+
+            <span class="online">
+                <span class="dot"></span>
+                Online
+            </span>
+
+        </div>
+
+        <button id="newChat">
+            <i class="fa-solid fa-plus"></i>
+            New Chat
         </button>
 
-    </div>
+        <button id="clearChat">
+            <i class="fa-solid fa-trash"></i>
+            Clear Chat
+        </button>
+
+        <div class="about">
+
+            <h3>About</h3>
+
+            <p>
+                Fine-Tuned Transformer Chatbot
+            </p>
+
+            <div class="tech">
+
+                <span>PyTorch</span>
+                <span>Flask</span>
+                <span>HTML</span>
+                <span>CSS</span>
+                <span>JavaScript</span>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main -->
+
+    <main class="chat-area">
+
+        <!-- Header -->
+
+        <header>
+
+            <div>
+
+                <h1>
+                    MiniGPT AI
+                </h1>
+
+                <p>
+                    Fine-Tuned Transformer Chatbot
+                </p>
+
+            </div>
+
+            <button id="themeBtn">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+
+        </header>
+
+
+        <!-- Welcome -->
+
+        <section id="welcome">
+
+            <h2>👋 Welcome!</h2>
+
+            <p>
+                Ask anything and start chatting.
+            </p>
+
+            <div class="cards">
+
+                <div class="card">
+                    Explain Transformers
+                </div>
+
+                <div class="card">
+                    Write Python Code
+                </div>
+
+                <div class="card">
+                    Summarize Text
+                </div>
+
+                <div class="card">
+                    Solve DSA Question
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Chat -->
+
+        <section id="chatBox">
+
+        </section>
+
+
+        <!-- Typing -->
+
+        <div id="typing" class="typing">
+
+            <div class="typingBubble">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+            MiniGPT is typing...
+
+        </div>
+
+
+        <!-- Input -->
+
+        <footer>
+
+            <textarea
+                    id="prompt"
+                    placeholder="Message MiniGPT..."
+                    rows="1"></textarea>
+
+            <button id="sendBtn">
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+            </button>
+
+        </footer>
+
+    </main>
 
 </div>
 
 <script src="script.js"></script>
 
 </body>
-</html>S
+</html>

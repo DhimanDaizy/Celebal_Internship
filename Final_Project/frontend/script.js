@@ -1,73 +1,181 @@
-const chatBox = document.getElementById("chat-box");
+const chatBox = document.getElementById("chatBox");
+const promptInput = document.getElementById("prompt");
+const sendBtn = document.getElementById("sendBtn");
+const typing = document.getElementById("typing");
+const welcome = document.getElementById("welcome");
+const clearBtn = document.getElementById("clearChat");
+const newChatBtn = document.getElementById("newChat");
 
-async function sendMessage() {
+const API_URL = "http://127.0.0.1:5000/chat";   // Change after deployment
 
-    const input = document.getElementById("message");
+function scrollBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
 
-    const message = input.value.trim();
+function currentTime() {
+    return new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
 
-    if(message==="") return;
+function createMessage(text, type) {
 
-    chatBox.innerHTML +=
-    `
-    <div class="user">
-        <span>${message}</span>
-    </div>
+    const wrapper = document.createElement("div");
+    wrapper.className = `message ${type}`;
+
+    wrapper.innerHTML = `
+        <div>${text}</div>
+
+        <div style="
+            margin-top:10px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            font-size:12px;
+            opacity:.7;
+        ">
+            <span>${currentTime()}</span>
+
+            ${
+                type === "bot"
+                    ? `<button class="copyBtn"
+                        style="
+                        background:none;
+                        border:none;
+                        color:#bbb;
+                        cursor:pointer;
+                        ">
+                        📋
+                    </button>`
+                    : ""
+            }
+        </div>
     `;
 
-    input.value="";
+    if (type === "bot") {
 
-    try{
+        wrapper.querySelector(".copyBtn")
+            .addEventListener("click", () => {
 
-        const response = await fetch(
-            "http://127.0.0.1:5000/chat",
-            {
+                navigator.clipboard.writeText(text);
 
-                method:"POST",
+                const btn = wrapper.querySelector(".copyBtn");
+                btn.innerText = "✅";
 
-                headers:{
-                    "Content-Type":"application/json"
-                },
+                setTimeout(() => {
+                    btn.innerText = "📋";
+                }, 1500);
 
-                body:JSON.stringify({
-                    message:message
-                })
-
-            }
-        );
-
-        const data = await response.json();
-
-        chatBox.innerHTML +=
-        `
-        <div class="bot">
-            <span>${data.response}</span>
-        </div>
-        `;
-
-        chatBox.scrollTop=chatBox.scrollHeight;
+            });
 
     }
 
-    catch(error){
+    chatBox.appendChild(wrapper);
 
-        chatBox.innerHTML +=
-        `
-        <div class="bot">
-            <span>❌ Backend Connection Failed</span>
-        </div>
-        `;
+    scrollBottom();
+}
+
+async function sendMessage() {
+
+    const prompt = promptInput.value.trim();
+
+    if (!prompt) return;
+
+    welcome.style.display = "none";
+
+    createMessage(prompt, "user");
+
+    promptInput.value = "";
+
+    typing.style.display = "flex";
+
+    scrollBottom();
+
+    try {
+
+        const response = await fetch(API_URL, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                message: prompt
+            })
+
+        });
+
+        const data = await response.json();
+
+        typing.style.display = "none";
+
+        createMessage(
+            data.response || "No response received.",
+            "bot"
+        );
+
+    }
+
+    catch (err) {
+
+        typing.style.display = "none";
+
+        createMessage(
+            "⚠️ Unable to connect to backend.",
+            "bot"
+        );
+
+        console.error(err);
+
     }
 
 }
 
-document.getElementById("message")
-.addEventListener("keypress",function(e){
+sendBtn.addEventListener("click", sendMessage);
 
-    if(e.key==="Enter"){
+promptInput.addEventListener("keydown", function (e) {
+
+    if (e.key === "Enter" && !e.shiftKey) {
+
+        e.preventDefault();
 
         sendMessage();
 
     }
 
 });
+
+clearBtn.addEventListener("click", () => {
+
+    chatBox.innerHTML = "";
+
+    welcome.style.display = "block";
+
+});
+
+newChatBtn.addEventListener("click", () => {
+
+    chatBox.innerHTML = "";
+
+    welcome.style.display = "block";
+
+    promptInput.value = "";
+
+});
+
+document.querySelectorAll(".card").forEach(card => {
+
+    card.addEventListener("click", () => {
+
+        promptInput.value = card.innerText;
+
+        sendMessage();
+
+    });
+
+});
+
+scrollBottom();
